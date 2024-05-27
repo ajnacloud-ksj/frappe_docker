@@ -11,6 +11,27 @@ RUN if [ -n "${APPS_JSON_BASE64}" ]; then \
     chown -R frappe:frappe /opt/frappe; \
   fi
 
+# Install necessary system dependencies
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+    sudo \
+    # Additional dependencies from easy-install.py script
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
+    python3-venv \
+    redis-server \
+    software-properties-common \
+    libssl-dev \
+    libffi-dev \
+    libsasl2-dev \
+    libldap2-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add sudo privileges to frappe user
+RUN echo "frappe ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
 # Switch back to the frappe user
 USER frappe
 
