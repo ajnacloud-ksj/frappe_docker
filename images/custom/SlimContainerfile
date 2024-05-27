@@ -1,13 +1,18 @@
 # Use the base image from ECR
 FROM 808527335982.dkr.ecr.ap-south-1.amazonaws.com/ajna_frappe_docker_base:latest AS builder
 
-USER frappe
+# Switch to root user for creating directory and setting permissions
+USER root
 
-# Copy apps.json if provided
+# Copy apps.json if provided and set permissions
 ARG APPS_JSON_BASE64
 RUN if [ -n "${APPS_JSON_BASE64}" ]; then \
-    mkdir /opt/frappe && echo "${APPS_JSON_BASE64}" | base64 -d > /opt/frappe/apps.json; \
+    mkdir -p /opt/frappe && echo "${APPS_JSON_BASE64}" | base64 -d > /opt/frappe/apps.json && \
+    chown -R frappe:frappe /opt/frappe; \
   fi
+
+# Switch back to the frappe user
+USER frappe
 
 # Initialize Frappe Bench with the specified branch and path
 ARG FRAPPE_BRANCH=version-15
@@ -16,7 +21,7 @@ RUN export APP_INSTALL_ARGS="" && \
   if [ -n "${APPS_JSON_BASE64}" ]; then \
     export APP_INSTALL_ARGS="--apps_path=/opt/frappe/apps.json"; \
   fi && \
-  bench init ${APP_INSTALL_ARGS}\
+  bench init ${APP_INSTALL_ARGS} \
     --frappe-branch=${FRAPPE_BRANCH} \
     --frappe-path=${FRAPPE_PATH} \
     --no-procfile \
