@@ -1,45 +1,13 @@
-
 # Use the base image from ECR
 FROM 808527335982.dkr.ecr.ap-south-1.amazonaws.com/ajna_frappe_docker_base:latest AS builder
 
-# Install additional dependencies for building and running the Frappe framework
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-    # For frappe framework
-    wget \
-    #for building arm64 binaries
-    libcairo2-dev \
-    libpango1.0-dev \
-    libjpeg-dev \
-    libgif-dev \
-    librsvg2-dev \
-    # For psycopg2
-    libpq-dev \
-    # Other
-    libffi-dev \
-    liblcms2-dev \
-    libldap2-dev \
-    libmariadb-dev \
-    libsasl2-dev \
-    libtiff5-dev \
-    libwebp-dev \
-    redis-tools \
-    rlwrap \
-    tk8.6-dev \
-    cron \
-    # For pandas
-    gcc \
-    build-essential \
-    libbz2-dev \
-    && rm -rf /var/lib/apt/lists/*
+USER frappe
 
 # Copy apps.json if provided
 ARG APPS_JSON_BASE64
 RUN if [ -n "${APPS_JSON_BASE64}" ]; then \
     mkdir /opt/frappe && echo "${APPS_JSON_BASE64}" | base64 -d > /opt/frappe/apps.json; \
   fi
-
-USER frappe
 
 # Initialize Frappe Bench with the specified branch and path
 ARG FRAPPE_BRANCH=version-15
