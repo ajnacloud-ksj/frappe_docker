@@ -45,6 +45,7 @@ services:
       DB_PORT: ${DB_PORT}
       REDIS_CACHE: ${REDIS_CACHE}
       REDIS_QUEUE: ${REDIS_QUEUE}
+      SITES: ${SITES}
       SOCKETIO_PORT: 9000
     depends_on: {}
 
