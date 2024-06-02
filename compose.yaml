@@ -31,13 +31,15 @@ services:
         bench set-config -g redis_queue "redis://$$REDIS_QUEUE"; 
         bench set-config -g redis_socketio "redis://$$REDIS_QUEUE"; 
         bench set-config -gp socketio_port $$SOCKETIO_PORT; 
-        existing_apps=$(bench --site $$CURRENT_SITE list-apps); 
-        for app in $(cat sites/apps.txt); do 
-          if ! echo "$$existing_apps" | grep -q $$app; then 
-            bench --site $$CURRENT_SITE install-app $$app; 
-          fi; 
-        done; 
-        bench migrate --site $$CURRENT_SITE;
+        for site in $(echo $$SITES | tr "," "\n" | tr -d "\`"); do
+          existing_apps=$(bench --site $$site list-apps); 
+          for app in $(cat sites/apps.txt); do 
+            if ! echo "$$existing_apps" | grep -q $$app; then 
+              bench --site $$site install-app $$app; 
+            fi; 
+          done; 
+          bench migrate --site $$site; 
+        done;
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
