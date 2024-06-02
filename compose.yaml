@@ -31,6 +31,11 @@ services:
         bench set-config -g redis_queue "redis://$$REDIS_QUEUE"; 
         bench set-config -g redis_socketio "redis://$$REDIS_QUEUE"; 
         bench set-config -gp socketio_port $$SOCKETIO_PORT; 
+        if [ -z "$(ls -A sites)" ]; then
+        for site in $(echo $$SITES | tr "," "\n" | tr -d "\`"); do
+          bench new-site $$site --no-mariadb-socket --db-root-password $$DB_ROOT_PASSWORD --admin-password $$SITE_ADMIN_PASS --install-app erpnext --set-default;
+        done;
+        fi;
         for site in $(echo $$SITES | tr "," "\n" | tr -d "\`"); do
           existing_apps=$(bench --site $$site list-apps); 
           for app in $(cat sites/apps.txt); do 
