@@ -38,7 +38,7 @@ services:
               bench --site $$site install-app $$app; 
             fi; 
           done; 
-          bench migrate --site $$site; 
+          bench --site $$site migrate --skip-failing; 
         done;
     environment:
       DB_HOST: ${DB_HOST}
