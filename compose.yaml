@@ -57,10 +57,11 @@ services:
             else
               echo "App $$app already installed on site $$site, skipping"
             fi; 
-          done; 
-          echo "Migrating site $$site"
-          bench --site $$site migrate --skip-failing; 
-        sleep 300
+        done; 
+        echo "Migrating site $$site"
+        bench --site $$site migrate --skip-failing;
+        echo "about to sleep..." 
+        sleep 300;
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
