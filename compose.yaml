@@ -23,7 +23,7 @@ services:
       - bash
       - -c
     # add redis_socketio for backward compatibility
-    command: /home/frappe/frappe-bench/configurator.sh
+    command: ["sh", "-c", "chmod +x /home/frappe/frappe-bench/configurator.sh && /home/frappe/frappe-bench/configurator.sh"]
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
