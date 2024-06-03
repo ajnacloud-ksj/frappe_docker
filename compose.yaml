@@ -60,7 +60,7 @@ services:
           done; 
           echo "Migrating site $$site"
           bench --site $$site migrate --skip-failing; 
-        done;
+        sleep 300
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
