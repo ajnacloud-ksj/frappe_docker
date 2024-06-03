@@ -13,6 +13,7 @@ x-backend-defaults: &backend_defaults
   <<: [*depends_on_configurator, *customizable_image]
   volumes:
     - sites:/home/frappe/frappe-bench/sites
+    - ./configurator.sh:/home/frappe/frappe-bench/configurator.sh
 
 services:
   configurator:
@@ -22,13 +23,16 @@ services:
       - bash
       - -c
     # add redis_socketio for backward compatibility
-    command: ./configurator.sh
+    command: /home/frappe/frappe-bench/configurator.sh
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
+      DB_PASSWORD: ${DB_PASSWORD}
       REDIS_CACHE: ${REDIS_CACHE}
       REDIS_QUEUE: ${REDIS_QUEUE}
       SITES: ${SITES}
+      SITE_ADMIN_PASS: ${SITE_ADMIN_PASS}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       SOCKETIO_PORT: 9000
     depends_on: {}
 
