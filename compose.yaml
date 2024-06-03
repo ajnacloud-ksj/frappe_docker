@@ -24,9 +24,11 @@ services:
     # add redis_socketio for backward compatibility
     command: 
     - > 
+      echo "sites receievd" 
+      echo "$SITES"
       if [ -z "$SITES" ]; then
        echo "SITES variable is empty. Exiting."
-       exit 1
+       
       fi
 
       ls -1 apps > sites/apps.txt
