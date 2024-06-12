@@ -75,11 +75,6 @@ RUN useradd -ms /bin/bash frappe \
 
 FROM base AS builder
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN wget http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.7_all.deb \
-    && dpkg -i ttf-mscorefonts-installer_3.7_all.deb
-
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     # For frappe framework
@@ -109,6 +104,11 @@ RUN apt-get update \
     build-essential \
     libbz2-dev \
     && rm -rf /var/lib/apt/lists/*
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN wget http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.7_all.deb \
+    && dpkg -i ttf-mscorefonts-installer_3.7_all.deb
 
 # apps.json includes
 ARG APPS_JSON_BASE64
