@@ -109,12 +109,10 @@ RUN apt-get update \
 # Other instructions to build your image# Ensure non-interactive environment
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN echo "deb http://deb.debian.org/debian bookworm contrib non-free" > /etc/apt/sources.list.d/contrib.list
+
 # Enable contrib repository and install ttf-mscorefonts-installer
-RUN echo "deb http://deb.debian.org/debian/ bookworm main contrib" > /etc/apt/sources.list.d/debian.sources && \
-    echo "deb-src http://deb.debian.org/debian/ bookworm main contrib" >> /etc/apt/sources.list.d/debian.sources && \
-    echo "deb http://security.debian.org/debian-security bookworm/updates main contrib" >> /etc/apt/sources.list.d/debian.sources && \
-    echo "deb-src http://security.debian.org/debian-security bookworm/updates main contrib" >> /etc/apt/sources.list.d/debian.sources && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y wget && \
     echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
     apt-get install -y ttf-mscorefonts-installer && \
