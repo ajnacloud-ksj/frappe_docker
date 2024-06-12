@@ -11,12 +11,11 @@ ARG NODE_VERSION=18.18.2
 ENV NVM_DIR=/home/frappe/.nvm
 ENV PATH ${NVM_DIR}/versions/node/v${NODE_VERSION}/bin/:${PATH}
 
+
 RUN useradd -ms /bin/bash frappe \
     && apt-get update \
     && apt-get install --no-install-recommends -y \
     curl \
-    cups \
-    ttf-mscorefonts-installer \
     git \
     vim \
     nginx \
@@ -75,6 +74,13 @@ RUN useradd -ms /bin/bash frappe \
     && chmod 644 /templates/nginx/frappe.conf.template
 
 FROM base AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
+    apt-get install -y ttf-mscorefonts-installer && \
+    apt-get clean
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
