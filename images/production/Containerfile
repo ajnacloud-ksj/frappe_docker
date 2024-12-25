@@ -70,7 +70,7 @@ RUN useradd -ms /bin/bash frappe \
 COPY resources/nginx-template.conf /templates/nginx/frappe.conf.template
 COPY resources/nginx-entrypoint.sh /usr/local/bin/nginx-entrypoint.sh
 
-FROM base AS builder
+FROM base AS build
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
@@ -98,6 +98,8 @@ RUN apt-get update \
 
 USER frappe
 
+FROM build AS builder
+
 ARG FRAPPE_BRANCH=version-15
 ARG FRAPPE_PATH=https://github.com/frappe/frappe
 ARG ERPNEXT_REPO=https://github.com/frappe/erpnext
@@ -118,6 +120,8 @@ RUN bench init \
 FROM base AS erpnext
 
 USER frappe
+
+RUN echo "echo \"Commands restricted in prodution container, Read FAQ before you proceed: https://frappe.fyi/ctr-faq\"" >> ~/.bashrc
 
 COPY --from=builder --chown=frappe:frappe /home/frappe/frappe-bench /home/frappe/frappe-bench
 

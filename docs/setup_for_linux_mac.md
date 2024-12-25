@@ -83,7 +83,7 @@ services:
           fi
         done;
         echo "sites/common_site_config.json found";
-        bench new-site --no-mariadb-socket --admin-password=admin --db-root-password=admin --install-app erpnext --set-default frontend;
+        bench new-site --mariadb-user-host-login-scope=% --admin-password=admin --db-root-password=admin --install-app erpnext --set-default frontend;
 
   db:
     image: mariadb:10.6
@@ -91,7 +91,7 @@ services:
     healthcheck:
       test: mysqladmin ping -h localhost --password=admin
       interval: 1s
-      retries: 15
+      retries: 20
     deploy:
       restart_policy:
         condition: on-failure
